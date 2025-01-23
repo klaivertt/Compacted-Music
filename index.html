@@ -28,7 +28,8 @@
 
             const loginButton = document.getElementById('login');
             const accessToken = localStorage.getItem('spotifyAccessToken');
-
+            console.log('Access Token:', accessToken);
+            
             if (accessToken) {
                 loginButton.textContent = 'Logout';
                 loginButton.addEventListener('click', () => {
