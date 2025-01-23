@@ -9,9 +9,6 @@
 </head>
 
 <body>
-    <!-- Background Image -->
-    <div class="background"></div>
-
     <!-- Header -->
     <header>
         <button class="login-btn-appleMusic">Login with Apple Music</button>
@@ -45,8 +42,19 @@
         </script>
     </header>
 
+    <!-- Background Image -->
+    <div class="background"></div>
+
+    <header>
     <!-- Main Content -->
     <div class="container">
+             <!-- Queue Section -->
+        <div class="queue">
+            <h2>Queue</h2>
+            <ul id="queue-list">
+                <li>No songs in the queue</li>
+            </ul>
+        </div>
         <!-- Now Playing Section -->
         <div class="now-playing">
            
@@ -67,15 +75,8 @@
             </div>
             
         </div>
-
-        <!-- Queue Section -->
-        <div class="queue">
-            <h2>Queue</h2>
-            <ul id="queue-list">
-                <li>No songs in the queue</li>
-            </ul>
-        </div>
-
+    <div>
+</div>
         <!-- Add Music Section -->
         <div class="add-music">
             <input type="text" id="search-input" placeholder="Search for a song or artist">
@@ -83,7 +84,7 @@
             <div id="search-results"></div>
         </div>
     </div>
-
+    </header>
     <script>
           const nowPlayingImg = document.querySelector('.now-playing img');
         const nowPlayingText = document.getElementById('now-playing-text');
@@ -126,9 +127,9 @@
                     const trackElement = document.createElement('div');
                     trackElement.classList.add('track-result');
                     trackElement.innerHTML = `
-                        <img src="${track.album.images[2]?.url}" alt="${track.name}" width="50" height="50">
-                        <p>${track.name} by ${track.artists.map(artist => artist.name).join(', ')}</p>
-                        <button onclick="addToQueue('${track.id}', '${track.name}', '${track.album.images[0]?.url}', '${track.artists.map(artist => artist.name).join(', ')}')">Add to Queue</button>
+                        <img src="${track.album.images[0]?.url}" alt="${track.name}" width="500" height="500">
+                        <p>${track.name} by ${track.artists.map(artist => artist.name).join(', ')}
+                        <button onclick="addToQueue('${track.id}', '${track.name}', '${track.album.images[0]?.url}', '${track.artist}')">Add to Queue</button></p>
                     `;
                     searchResultsContainer.appendChild(trackElement);
                 });
@@ -161,11 +162,11 @@
                 // Show the now playing track
                 const nowPlayingItem = document.createElement('li');
                 nowPlayingItem.classList.add('queue-item', 'now-playing-item');
-                nowPlayingItem.innerHTML = `
-                    <img src="${nowPlayingTrack.trackImage}" alt="${nowPlayingTrack.trackName}" width="50" height="50">
-                    <p>${nowPlayingTrack.trackName}</p>
-                    <span>(Now Playing)</span>
-                `;
+                // nowPlayingItem.innerHTML = `
+                //     <img src="${nowPlayingTrack.trackImage}" alt="${nowPlayingTrack.trackName} by ${nowPlayingTrack.artist} " width="50" height="50">
+                //     <p>${nowPlayingTrack.trackName} by ${nowPlayingTrack.artist}</p>
+                //     <span> (Now Playing)</span>
+                // `;
                 queueList.appendChild(nowPlayingItem);
 
                 // Show the upcoming tracks
@@ -174,8 +175,8 @@
                         const upcomingItem = document.createElement('li');
                         upcomingItem.classList.add('queue-item');
                         upcomingItem.innerHTML = `
-                            <img src="${track.trackImage}" alt="${track.trackName}" width="50" height="50">
-                            <p>${track.trackName}</p>
+                            <img src="${track.trackImage}" alt="${track.trackName} by ${track.artist}" width="50" height="50">
+                            <p>${track.trackName} by ${track.artist}</p>
                         `;
                         queueList.appendChild(upcomingItem);
                     }
