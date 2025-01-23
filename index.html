@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Watch2Gether</title>
+    <link rel="stylesheet" href="Styles.css">
+
+</head>
+
+<body>
+    <!-- Background Image -->
+    <div class="background"></div>
+
+    <!-- Header -->
+    <header>
+        <button class="login-btn-appleMusic">Login with Apple Music</button>
+
+        <button class="login-btn-spotify" id="login">Login with Spotify</button>
+        <script>
+            const clientId = '08f32674306a4d289b71abb8915cf9d1';
+            const redirectUri = 'http://127.0.0.1:5500/callback.html';
+            const scope = 'user-library-read playlist-read-private user-read-private user-read-email';
+            const responseType = 'token refresh_token';
+
+
+            document.getElementById('login').addEventListener('click', () => {
+                const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=${responseType}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
+                window.location.href = authUrl;
+            });
+        </script>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Now Playing Section -->
+        <div class="now-playing">
+            <img src="https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/c4/7e/22/c47e22bf-0d2b-e211-815c-39c41428c6a4/23UMGIM16392.rgb.jpg/300x300bb.webp"
+                alt="Album Cover">
+            <div class="controls">
+                <button>⏮️</button>
+                <button>⏯️</button>
+                <button>⏭️</button>
+            </div>
+            <div class="progress">
+                <div class="progress-bar">
+                    <div style="width: 50%;"></div>
+                </div>
+                <div class="time">1:30 / 3:00</div>
+            </div>
+            <h2>Now Playing</h2>
+            <p>No track playing</p>
+        </div>
+
+        <!-- Queue Section -->
+        <div class="queue">
+            <h2>Queue</h2>
+            <ul>
+                <li>No songs in the queue</li>
+            </ul>
+        </div>
+
+        <!-- Add Music Section -->
+        <div class="add-music">
+            <input type="text" placeholder="Add a song URL or title">
+            <button>Add</button>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    const nowPlayingImg = document.querySelector('.now-playing img');
+    const background = document.querySelector('.background');
+
+    function syncBackgroundWithNowPlaying() {
+        const imgSrc = nowPlayingImg.src;
+        background.style.backgroundImage = `url(${imgSrc})`;
+    }
+
+    nowPlayingImg.addEventListener('load', syncBackgroundWithNowPlaying);
+
+    // Initial sync
+    syncBackgroundWithNowPlaying();
+</script>

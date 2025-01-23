@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Callback</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 50px;
+        }
+
+        .welcome {
+            word-wrap: break-word;
+            background: #1DB954;
+            padding: 10px;
+            border-radius: 8px;
+            color: white;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        img {
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Spotify Auth Success</h1>
+
+    <script>
+        // Extraire le token de l'URL
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');  
+
+        if (accessToken) {
+            console.log('Access Token:', accessToken);
+            console.log('Refresh Token:', refreshToken);
+
+            // Stocke les tokens dans localStorage
+            localStorage.setItem('spotifyAccessToken', accessToken);
+            localStorage.setItem('spotifyRefreshToken', refreshToken); 
+
+            // Récupérer les informations de l'utilisateur
+            fetch('https://api.spotify.com/v1/me', {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('User Info:', data);
+
+                    // Créer une div conteneur
+                    const container = document.createElement('div');
+                    container.style.marginTop = '20px';
+
+                    const profileImage = document.createElement('img');
+                    profileImage.src = data.images[0]?.url || 'default-profile.png';
+                    profileImage.alt = 'Profile Image';
+                    profileImage.style = 'border-radius: 50%; width: 150px; height: 150px; display: block; margin: 0 auto;';
+
+                    const welcomeMessage = document.createElement('h2');
+                    welcomeMessage.className = 'welcome';
+                    welcomeMessage.textContent = `Welcome, ${data.display_name}!`;
+
+                    const countryInfo = document.createElement('p');
+                    countryInfo.textContent = `Country: ${data.country}`;
+
+                    // Ajouter les éléments au conteneur dans le bon ordre
+                    container.appendChild(profileImage);
+                    container.appendChild(welcomeMessage);
+                    container.appendChild(countryInfo);
+
+                    // Ajouter le conteneur au body
+                    document.body.appendChild(container);
+                })
+                .catch(err => console.error('Error fetching user info:', err));
+        } else {
+            document.body.innerHTML = '<h1>Error: No access token found</h1>';
+        }
+    </script>
+</body>
+
+</html>
