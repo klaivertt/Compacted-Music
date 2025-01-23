@@ -1,13 +1,14 @@
 /* Styles.css */
 
 :root {
-    --primary-color: #1db954;
+    --primary-color: #ffffff;
     --background-color: #121212;
-    --text-color: #fff;
-    --secondary-color: #535353;
+    --text-color: #ffffff;
+    --buttonText-color: #000000;
+    --secondary-color: #5f5f5f;
     --accent-color: #282828;
     --hover-color: #1aa34a;
-    --border-radius: 10px;
+    --border-radius: 30px;
     --transition-duration: 0.3s;
 }
 
@@ -46,7 +47,7 @@ header button {
     margin-left: 1rem;
     padding: 0.5rem 1rem;
     background-color: var(--primary-color);
-    color: var(--text-color);
+    color: var(--buttonText-color);
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
@@ -106,7 +107,7 @@ header button:hover {
 
 .progress-bar {
     background-color: var(--secondary-color);
-    height: 8px;
+    height: 10px;
     border-radius: var(--border-radius);
     overflow: hidden;
     position: relative;
