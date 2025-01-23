@@ -29,6 +29,7 @@ body {
     background-position: center;
     opacity: 0.2;
     z-index: -1;
+    filter: blur(20px);
 }
 
 header {
@@ -83,6 +84,7 @@ header button:hover {
     border-radius: var(--border-radius);
     margin-bottom: 1rem;
 }
+
 
 .controls button {
     margin: 0 0.5rem;
@@ -140,7 +142,7 @@ header button:hover {
     border: none;
     border-radius: var(--border-radius);
     margin-right: 1rem;
-    background: var(--secondary-color);
+    background: #000000;
     color: var(--text-color);
 }
 
