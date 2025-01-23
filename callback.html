@@ -57,15 +57,16 @@
         const params = new URLSearchParams(hash);
 
         const accessToken = params.get('access_token');
-        const refreshToken = params.get('refresh_token');  
-
+        const refreshToken = params.get('refresh_token');
+        // Créer une div conteneur
+        const container = document.createElement('div');
         if (accessToken) {
             console.log('Access Token:', accessToken);
             console.log('Refresh Token:', refreshToken);
 
             // Stocke les tokens dans localStorage
             localStorage.setItem('spotifyAccessToken', accessToken);
-            localStorage.setItem('spotifyRefreshToken', refreshToken); 
+            localStorage.setItem('spotifyRefreshToken', refreshToken);
 
             // Récupérer les informations de l'utilisateur
             fetch('https://api.spotify.com/v1/me', {
@@ -77,8 +78,6 @@
                 .then(data => {
                     console.log('User Info:', data);
 
-                    // Créer une div conteneur
-                    const container = document.createElement('div');
                     container.style.marginTop = '20px';
 
                     const profileImage = document.createElement('img');
@@ -97,23 +96,22 @@
                     container.appendChild(profileImage);
                     container.appendChild(welcomeMessage);
                     container.appendChild(countryInfo);
-
-                    // Ajouter le conteneur au body
-                    document.body.appendChild(container);
                 })
                 .catch(err => console.error('Error fetching user info:', err));
         } else {
             document.body.innerHTML = '<h1>Error: No access token found</h1>';
         }
 
-        // Fonction pour retourner à la page précédente
-        function goBack() {
-            window.history.back();
-        }
-    </script>
+        document.body.appendChild(container);
 
-    <!-- Bouton retour -->
-    <button class="back-btn" onclick="goBack()">Back</button>
+        const backButton = document.createElement('button');
+        backButton.textContent = 'Back';
+        backButton.className = 'back-btn';
+        backButton.onclick = function () {
+            window.history.back();  // Retour à la page précédente
+        };
+        document.body.appendChild(backButton);
+    </script>
 </body>
 
 </html>
