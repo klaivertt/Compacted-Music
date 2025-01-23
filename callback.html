@@ -30,6 +30,21 @@
             margin: 0 auto;
             border-radius: 50%;
         }
+
+        .back-btn {
+            background-color: #1DB954;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .back-btn:hover {
+            background-color: #1ed760;
+        }
     </style>
 </head>
 
@@ -90,7 +105,15 @@
         } else {
             document.body.innerHTML = '<h1>Error: No access token found</h1>';
         }
+
+        // Fonction pour retourner à la page précédente
+        function goBack() {
+            window.history.back();
+        }
     </script>
+
+    <!-- Bouton retour -->
+    <button class="back-btn" onclick="goBack()">Back</button>
 </body>
 
 </html>

@@ -21,12 +21,15 @@
         <script>
             const clientId = '08f32674306a4d289b71abb8915cf9d1';
             const redirectUri = 'http://127.0.0.1:5500/callback.html';
-            const scope = 'user-library-read playlist-read-private user-read-private user-read-email';
-            const responseType = 'token refresh_token';
-
+            const scopes = [
+                'user-read-private',
+                'user-read-email',
+                'user-read-playback-state',
+                'user-modify-playback-state'
+            ];
 
             document.getElementById('login').addEventListener('click', () => {
-                const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=${responseType}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
+                const authUrl = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.join(' '))}`;
                 window.location.href = authUrl;
             });
         </script>
@@ -36,7 +39,7 @@
     <div class="container">
         <!-- Now Playing Section -->
         <div class="now-playing">
-            <img src="https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/c4/7e/22/c47e22bf-0d2b-e211-815c-39c41428c6a4/23UMGIM16392.rgb.jpg/300x300bb.webp"
+            <img src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/5c/0e/66/5c0e66c0-d383-5641-3ec0-4bdb629c49ad/886445705119.jpg/300x300bb.webp"
                 alt="Album Cover">
             <div class="controls">
                 <button>⏮️</button>
