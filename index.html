@@ -40,9 +40,9 @@
             <img src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/5c/0e/66/5c0e66c0-d383-5641-3ec0-4bdb629c49ad/886445705119.jpg/300x300bb.webp"
                 alt="Album Cover">
             <div class="controls">
-                <button>⏮️</button>
-                <button>⏯️</button>
-                <button>⏭️</button>
+                <button onclick="prevTrack()">⏮️</button>
+                <button onclick="togglePlay()">⏯️</button>
+                <button onclick="nextTrack()">⏭️</button>
             </div>
             <div class="progress">
                 <div class="progress-bar">
@@ -51,7 +51,7 @@
                 <div class="time">1:30 / 3:00</div>
             </div>
             <h2>Now Playing</h2>
-            <p>No track playing</p>
+            <p id="now-playing-text">No track playing</p>
         </div>
 
         <!-- Queue Section -->
@@ -72,23 +72,20 @@
 
     <script>
         const nowPlayingImg = document.querySelector('.now-playing img');
+        const nowPlayingText = document.getElementById('now-playing-text');
         const background = document.querySelector('.background');
-
-        function syncBackgroundWithNowPlaying() {
-            const imgSrc = nowPlayingImg.src;
-            background.style.backgroundImage = `url(${imgSrc})`;
-        }
-
-        nowPlayingImg.addEventListener('load', syncBackgroundWithNowPlaying);
-
-        // Initial sync
-        syncBackgroundWithNowPlaying();
-
+        const queueList = document.getElementById('queue-list');
         const searchInput = document.getElementById('search-input');
         const searchButton = document.getElementById('search-btn');
         const searchResultsContainer = document.getElementById('search-results');
-        const queueList = document.getElementById('queue-list');
         let accessToken = localStorage.getItem('spotifyAccessToken'); // Get the token from localStorage
+        let currentTrackIndex = 0; // To keep track of the current song in the queue
+        let tracksQueue = []; // Array to store the queue of tracks
+
+        // Function to sync background image with "Now Playing" album cover
+        function syncBackgroundWithNowPlaying(imgSrc) {
+            background.style.backgroundImage = `url(${imgSrc})`;
+        }
 
         // Function to search for songs on Spotify
         async function searchMusic(query) {
@@ -128,13 +125,95 @@
 
         // Function to add a track to the queue
         function addToQueue(trackId, trackName, trackImage) {
-            const listItem = document.createElement('li');
-            listItem.classList.add('queue-item');
-            listItem.innerHTML = `
-                <img src="${trackImage}" alt="${trackName}" width="50" height="50">
-                <p>${trackName}</p>
-            `;
-            queueList.appendChild(listItem);
+            tracksQueue.push({ trackId, trackName, trackImage });
+            updateQueueUI();
+            if (tracksQueue.length === 1) {
+                playTrack(0);
+            }
+        }
+
+        // Update the queue UI
+        function updateQueueUI() {
+            queueList.innerHTML = '';
+            if (tracksQueue.length === 0) {
+                queueList.innerHTML = '<li>No songs in the queue</li>';
+                nowPlayingText.textContent = 'No track playing';
+                nowPlayingImg.src = '';
+                syncBackgroundWithNowPlaying('');
+            } else {
+                tracksQueue.forEach((track, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('queue-item');
+                    listItem.innerHTML = `
+                        <img src="${track.trackImage}" alt="${track.trackName}" width="50" height="50">
+                        <p>${track.trackName}</p>
+                        <button onclick="removeFromQueue(${index})">Remove</button>
+                    `;
+                    queueList.appendChild(listItem);
+                });
+            }
+        }
+
+        // Remove track from the queue
+        function removeFromQueue(index) {
+            tracksQueue.splice(index, 1);
+            updateQueueUI();
+            if (index === currentTrackIndex && tracksQueue.length > 0) {
+                playTrack(0); // Start playing the first track in the queue
+            }
+        }
+
+        // Function to play a track
+        async function playTrack(index) {
+            const track = tracksQueue[index];
+            currentTrackIndex = index;
+            nowPlayingText.textContent = `Now playing: ${track.trackName}`;
+            nowPlayingImg.src = track.trackImage;
+            syncBackgroundWithNowPlaying(track.trackImage);
+
+            // Call Spotify API to start playback
+            try {
+                const response = await fetch('https://api.spotify.com/v1/me/player/play', {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        uris: [`spotify:track:${track.trackId}`]
+                    })
+                });
+                if (!response.ok) {
+                    console.error('Failed to play track');
+                }
+            } catch (error) {
+                console.error('Error playing track:', error);
+            }
+        }
+
+        // Control playback (play/pause)
+        function togglePlay() {
+            fetch('https://api.spotify.com/v1/me/player/play', {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+        }
+
+        // Play next track
+        function nextTrack() {
+            if (currentTrackIndex < tracksQueue.length - 1) {
+                playTrack(currentTrackIndex + 1);
+            }
+        }
+
+        // Play previous track
+        function prevTrack() {
+            if (currentTrackIndex > 0) {
+                playTrack(currentTrackIndex - 1);
+            }
         }
 
         // Event listener for search button
@@ -145,7 +224,7 @@
             }
         });
 
-        // Optionally, you can make the search trigger on "Enter" key press
+        // Event listener for enter key to search
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const query = searchInput.value;
@@ -154,6 +233,12 @@
                 }
             }
         });
+
+        // Initial setup if queue is not empty
+        if (tracksQueue.length > 0) {
+            playTrack(0);
+        }
+
     </script>
 </body>
 
