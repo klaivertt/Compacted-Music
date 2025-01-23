@@ -49,21 +49,23 @@
     <div class="container">
         <!-- Now Playing Section -->
         <div class="now-playing">
+           
             <img src="Icon.png"
                     ">
-            <div class="controls">
-                <button onclick="prevTrack()">⏮️</button>
-                <button onclick="togglePlay()">⏯️</button>
-                <button onclick="nextTrack()">⏭️</button>
-            </div>
+            <h1 class = "player-title" id="now-playing-text">No track playing</h1>
+            <h2 class = "player-title" id="now-playing-artist">No track playing</h2>
             <div class="progress">
                 <div class="progress-bar">
                     <div style="width: 50%;"></div>
                 </div>
                 <div class="time">1:30 / 3:00</div>
             </div>
-            <h2>Now Playing :</h2>
-            <p id="now-playing-text">No track playing</p>
+            <div class="controls">
+                <button onclick="prevTrack()">⏮️</button>
+                <button onclick="togglePlay()">⏯️</button>
+                <button onclick="nextTrack()">⏭️</button>
+            </div>
+            
         </div>
 
         <!-- Queue Section -->
@@ -85,6 +87,7 @@
     <script>
           const nowPlayingImg = document.querySelector('.now-playing img');
         const nowPlayingText = document.getElementById('now-playing-text');
+        const nowPlayingArtist = document.getElementById('now-playing-artist');
         const background = document.querySelector('.background');
         const queueList = document.getElementById('queue-list');
         const searchInput = document.getElementById('search-input');
@@ -125,7 +128,7 @@
                     trackElement.innerHTML = `
                         <img src="${track.album.images[2]?.url}" alt="${track.name}" width="50" height="50">
                         <p>${track.name} by ${track.artists.map(artist => artist.name).join(', ')}</p>
-                        <button onclick="addToQueue('${track.id}', '${track.name}', '${track.album.images[2]?.url}')">Add to Queue</button>
+                        <button onclick="addToQueue('${track.id}', '${track.name}', '${track.album.images[0]?.url}', '${track.artists.map(artist => artist.name).join(', ')}')">Add to Queue</button>
                     `;
                     searchResultsContainer.appendChild(trackElement);
                 });
@@ -135,8 +138,8 @@
         }
 
         // Function to add a track to the queue
-        function addToQueue(trackId, trackName, trackImage) {
-            tracksQueue.push({ trackId, trackName, trackImage });
+        function addToQueue(trackId, trackName, trackImage, artist) {
+            tracksQueue.push({ trackId, trackName, trackImage, artist });
             updateQueueUI();
             if (tracksQueue.length === 1) {
                 playTrack(0); // Automatically play the first track if it's the first one in the queue
@@ -150,6 +153,7 @@
             if (tracksQueue.length === 0) {
                 queueList.innerHTML = '<li>No songs in the queue</li>';
                 nowPlayingText.textContent = 'No track playing';
+                nowPlayingArtist.textContent = 'No Artist playing';
                 nowPlayingImg.src = '';
                 syncBackgroundWithNowPlaying('');
             } else {
@@ -193,6 +197,7 @@
             const track = tracksQueue[index];
             currentTrackIndex = index;
             nowPlayingText.textContent = `${track.trackName}`;
+            nowPlayingArtist.textContent = `${track.artist}`;
             nowPlayingImg.src = track.trackImage;
             syncBackgroundWithNowPlaying(track.trackImage);
 

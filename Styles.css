@@ -7,14 +7,14 @@
     --buttonText-color: #000000;
     --secondary-color: #5f5f5f;
     --accent-color: #282828;
-    --hover-color: #1aa34a;
+    --hover-color: #ffffff;
     --border-radius: 30px;
     --transition-duration: 0.3s;
 }
 
 body {
     margin: 0;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
@@ -30,6 +30,7 @@ body {
     background-position: center;
     opacity: 0.2;
     z-index: -1;
+    filter: blur(10px);
 }
 
 header {
@@ -74,26 +75,33 @@ header button:hover {
     padding: 1.5rem;
     border-radius: var(--border-radius);
     width: 90%;
-    max-width: 800px;
+    max-width: 600px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .now-playing img {
-    width: 100px;
-    height: 100px;
+    width: 600px;
+    height: 600px;
     border-radius: var(--border-radius);
-    margin-bottom: 1rem;
+    /* margin-bottom: 0rem; */
+}
+
+.player-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    text-align: center;
 }
 
 .controls button {
+    transform: translateX(270%);
     margin: 0 0.5rem;
-    background: var(--secondary-color);
-    color: var(--text-color);
+    background: var(--accent-color);
+    color: var(--buttonText-color);
     border: none;
     padding: 0.7rem;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 1.9rem;
     transition: background-color var(--transition-duration);
 }
 
@@ -131,30 +139,31 @@ header button:hover {
 .queue-item img {
     width: 50px;
     height: 50px;
-    border-radius: var(--border-radius);
+    border-radius: 10px;
     margin-right: 1rem;
 }
 
 .add-music input {
-    width: calc(100% - 110px);
+    width: calc(100% - 150px);
     padding: 0.7rem;
     border: none;
     border-radius: var(--border-radius);
     margin-right: 1rem;
-    background: var(--secondary-color);
-    color: var(--text-color);
+    background: #ffffff;
+    color: #000000;
 }
 
 .add-music button {
-    padding: 0.7rem 1rem;
+    padding: 0.7rem 1.5rem;
     background-color: var(--primary-color);
-    color: var(--text-color);
+    color: var(--buttonText-color);
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
-    transition: background-color var(--transition-duration);
+    transition: transform var(--transition-duration), background-color var(--transition-duration);
 }
 
 .add-music button:hover {
     background-color: var(--hover-color);
+    transform: scale(1.1);
 }
