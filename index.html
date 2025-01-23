@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify Watch2Gether</title>
+    <title>Spotify Listen2Gether</title>
     <link rel="stylesheet" href="Styles.css">
 </head>
 
@@ -26,10 +26,17 @@
                 'user-modify-playback-state'
             ];
 
-            document.getElementById('login').addEventListener('click', () => {
-                const authUrl = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.join(' '))}`;
-                window.location.href = authUrl;
-            });
+            const loginButton = document.getElementById('login');
+            const accessToken = localStorage.getItem('spotifyAccessToken');
+
+            if (accessToken) {
+                loginButton.textContent = 'Logged';
+            } else {
+                loginButton.addEventListener('click', () => {
+                    const authUrl = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.join(' '))}`;
+                    window.location.href = authUrl;
+                });
+            }
         </script>
     </header>
 
@@ -37,7 +44,7 @@
     <div class="container">
         <!-- Now Playing Section -->
         <div class="now-playing">
-            <img src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/5c/0e/66/5c0e66c0-d383-5641-3ec0-4bdb629c49ad/886445705119.jpg/300x300bb.webp"
+            <img src="Icon.png"
                 alt="Album Cover">
             <div class="controls">
                 <button onclick="prevTrack()">⏮️</button>
@@ -50,7 +57,7 @@
                 </div>
                 <div class="time">1:30 / 3:00</div>
             </div>
-            <h2>Now Playing</h2>
+            <h2>Now Playing :</h2>
             <p id="now-playing-text">No track playing</p>
         </div>
 
@@ -71,14 +78,13 @@
     </div>
 
     <script>
-        const nowPlayingImg = document.querySelector('.now-playing img');
+          const nowPlayingImg = document.querySelector('.now-playing img');
         const nowPlayingText = document.getElementById('now-playing-text');
         const background = document.querySelector('.background');
         const queueList = document.getElementById('queue-list');
         const searchInput = document.getElementById('search-input');
         const searchButton = document.getElementById('search-btn');
         const searchResultsContainer = document.getElementById('search-results');
-        let accessToken = localStorage.getItem('spotifyAccessToken'); // Get the token from localStorage
         let currentTrackIndex = 0; // To keep track of the current song in the queue
         let tracksQueue = []; // Array to store the queue of tracks
 
@@ -128,28 +134,42 @@
             tracksQueue.push({ trackId, trackName, trackImage });
             updateQueueUI();
             if (tracksQueue.length === 1) {
-                playTrack(0);
+                playTrack(0); // Automatically play the first track if it's the first one in the queue
             }
         }
 
         // Update the queue UI
         function updateQueueUI() {
             queueList.innerHTML = '';
+
             if (tracksQueue.length === 0) {
                 queueList.innerHTML = '<li>No songs in the queue</li>';
                 nowPlayingText.textContent = 'No track playing';
                 nowPlayingImg.src = '';
                 syncBackgroundWithNowPlaying('');
             } else {
+                const nowPlayingTrack = tracksQueue[currentTrackIndex];
+                // Show the now playing track
+                const nowPlayingItem = document.createElement('li');
+                nowPlayingItem.classList.add('queue-item', 'now-playing-item');
+                nowPlayingItem.innerHTML = `
+                    <img src="${nowPlayingTrack.trackImage}" alt="${nowPlayingTrack.trackName}" width="50" height="50">
+                    <p>${nowPlayingTrack.trackName}</p>
+                    <span>(Now Playing)</span>
+                `;
+                queueList.appendChild(nowPlayingItem);
+
+                // Show the upcoming tracks
                 tracksQueue.forEach((track, index) => {
-                    const listItem = document.createElement('li');
-                    listItem.classList.add('queue-item');
-                    listItem.innerHTML = `
-                        <img src="${track.trackImage}" alt="${track.trackName}" width="50" height="50">
-                        <p>${track.trackName}</p>
-                        <button onclick="removeFromQueue(${index})">Remove</button>
-                    `;
-                    queueList.appendChild(listItem);
+                    if (index !== currentTrackIndex) {
+                        const upcomingItem = document.createElement('li');
+                        upcomingItem.classList.add('queue-item');
+                        upcomingItem.innerHTML = `
+                            <img src="${track.trackImage}" alt="${track.trackName}" width="50" height="50">
+                            <p>${track.trackName}</p>
+                        `;
+                        queueList.appendChild(upcomingItem);
+                    }
                 });
             }
         }
@@ -167,7 +187,7 @@
         async function playTrack(index) {
             const track = tracksQueue[index];
             currentTrackIndex = index;
-            nowPlayingText.textContent = `Now playing: ${track.trackName}`;
+            nowPlayingText.textContent = `${track.trackName}`;
             nowPlayingImg.src = track.trackImage;
             syncBackgroundWithNowPlaying(track.trackImage);
 
@@ -238,7 +258,6 @@
         if (tracksQueue.length > 0) {
             playTrack(0);
         }
-
     </script>
 </body>
 
