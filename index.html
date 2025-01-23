@@ -20,23 +20,28 @@
             const clientId = '08f32674306a4d289b71abb8915cf9d1';
             const redirectUri = 'http://127.0.0.1:5500/callback.html';
             const scopes = [
-                'user-read-private',
-                'user-read-email',
-                'user-read-playback-state',
-                'user-modify-playback-state'
+            'user-read-private',
+            'user-read-email',
+            'user-read-playback-state',
+            'user-modify-playback-state'
             ];
 
             const loginButton = document.getElementById('login');
             const accessToken = localStorage.getItem('spotifyAccessToken');
 
             if (accessToken) {
-                loginButton.textContent = 'Logged';
+            loginButton.textContent = 'Logout';
+            loginButton.addEventListener('click', () => {
+                window.location.href = 'logout.html';
+            });
             } else {
-                loginButton.addEventListener('click', () => {
-                    const authUrl = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.join(' '))}`;
-                    window.location.href = authUrl;
-                });
+            loginButton.addEventListener('click', () => {
+                const authUrl = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.join(' '))}`;
+                window.location.href = authUrl;
+            });
             }
+        </script>
+
         </script>
     </header>
 
@@ -45,7 +50,7 @@
         <!-- Now Playing Section -->
         <div class="now-playing">
             <img src="Icon.png"
-                alt="Album Cover">
+                    ">
             <div class="controls">
                 <button onclick="prevTrack()">⏮️</button>
                 <button onclick="togglePlay()">⏯️</button>
